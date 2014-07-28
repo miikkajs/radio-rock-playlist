@@ -8,6 +8,7 @@ var index = function(req, res) {
 	request.get("http://www.radiorock.fi/api/programdata/getlatest?", function(err, response, body) {
 		var json = JSON.parse(body);
 		parseArtists(json.result, function() {
+			calculated.sort(sortByCount);
 			res.send(calculated);
 		});
 
@@ -50,6 +51,7 @@ var parseArtists = function(json, cb) {
 				if(foundArtist.songs[i].song == data.song) {
 					foundArtist.songs[i].count++;
 					found = true;
+					foundArtist.songs.sort(sortByCount);
 				}
 			}
 
@@ -65,4 +67,8 @@ var parseArtists = function(json, cb) {
 
 	});
 	cb();
+};
+
+var sortByCount = function(a,b){
+	return  b.count - a.count;
 };
