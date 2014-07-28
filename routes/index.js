@@ -37,7 +37,8 @@ var parseArtists = function(json, cb) {
 				[
 					{
 						song: data.song,
-						count: 1
+						count: 1,
+						timestamp: data.timestamp
 					}
 				]
 			});
@@ -55,7 +56,8 @@ var parseArtists = function(json, cb) {
 			if(!found) {
 				foundArtist.songs.push({
 					song: data.song,
-					count: 1
+					count: 1,
+					timestamp: data.timestamp
 				});
 			}
 
