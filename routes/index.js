@@ -1,15 +1,21 @@
 var request = require('request');
-var calculated = [];
+var calculated;
+var results;
+
 module.exports = function(app) {
 	app.get('/', index);
 };
 
 var index = function(req, res) {
+	calculated = [];
+	results = {};
+	results.totalSongCount = 0;
 	request.get("http://www.radiorock.fi/api/programdata/getlatest?", function(err, response, body) {
 		var json = JSON.parse(body);
 		parseArtists(json.result, function() {
 			calculated.sort(sortByCount);
-			res.send(calculated);
+			results.artists = calculated;
+			res.send(results);
 		});
 
 
@@ -50,6 +56,7 @@ var parseArtists = function(json, cb) {
 			for(var i = 0 ; i < foundArtist.songs.length ; ++i) {
 				if(foundArtist.songs[i].song == data.song) {
 					foundArtist.songs[i].count++;
+					results.totalSongCount++;
 					found = true;
 					foundArtist.songs.sort(sortByCount);
 				}
@@ -61,6 +68,7 @@ var parseArtists = function(json, cb) {
 					count: 1,
 					timestamp: data.timestamp
 				});
+				results.totalSongCount++;
 			}
 
 		}
